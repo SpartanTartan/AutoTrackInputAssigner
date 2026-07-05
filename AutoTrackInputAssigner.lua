@@ -1,9 +1,12 @@
 -- REAPER Auto-Input Map Configuration
--- MONO INPUTS:   Use the physical input number minus 1 (e.g., Input 1 = 0, Input 2 = 1)
--- STEREO INPUTS: Use 1024 + (Starting physical input number minus 1)
+-- MONO AUDIO:   Use the physical input number minus 1 (e.g., Input 1 = 0)
+-- STEREO AUDIO: Use 1024 + (Starting physical input number minus 1)
+-- MIDI DEVICES: Use 4096 + (MIDI Device ID * 32) + MIDI Channel (0 = All Channels)
+--               *Note: Use Device ID 63 for "All MIDI Inputs"
 local rules = {
-    ["monotrack"]   = { input = 0,         auto_arm = true, monitor = 1 }, -- Mono Hardware Input 1
-    ["stereotrack"] = { input = 1024 + 0,  auto_arm = true, monitor = 1 }  -- Stereo Hardware Inputs 1 & 2
+    ["monotrack"]   = { input = 0,                    auto_arm = true, monitor = 1 }, -- Mono Hardware Input 1
+    ["stereotrack"] = { input = 1024 + 0,             auto_arm = true, monitor = 1 }, -- Stereo Hardware Inputs 1 & 2
+    ["miditrack"]   = { input = 4096 + (63 * 32) + 0, auto_arm = true, monitor = 1 }  -- MIDI: All Inputs, All Channels
 }
 
 local function autoConfigureTracks()
