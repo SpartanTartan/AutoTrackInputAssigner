@@ -8,7 +8,7 @@ This script pairs perfectly with SWS Auto-Color/Icon/Layout setups. While SWS ha
 
 ## Features
 * **Name-Based Automation:** Matches track names instantly (case-insensitive).
-* **Smart Input Selection:** Seamlessly maps both Mono and Stereo hardware interface inputs.
+* **Smart Input Selection:** Seamlessly maps Mono Audio, Stereo Audio, and MIDI hardware interface inputs.
 * **Instant Record Ready:** Automatically arms the track for recording (`I_RECARM`).
 * **Live Input Monitoring:** Automatically sets Record Monitoring to "On" (`I_RECMON`).
 * **Performance Optimized:** Only applies changes if the track settings don't already match your rules, preventing undo history bloat and keeping REAPER running at peak performance.
@@ -38,17 +38,21 @@ To add your own gear or adjust track triggers, look for the `local rules = { ...
 ### The Routing Logic Guide
 Because REAPER's internal API starts counting inputs from `0` (Input 1 is index 0), use the following formulas to configure your inputs:
 
-* **Mono Channels:** Use the hardware input number minus 1.
+* **Mono Audio:** Use the hardware input number minus 1.
   * *Example (Input 1):* `0`
   * *Example (Input 5):* `4`
-* **Stereo Channels:** Add `1024` to the starting hardware input index number.
+* **Stereo Audio:** Add `1024` to the starting hardware input index number.
   * *Example (Stereo Inputs 1 & 2):* `1024 + 0`
   * *Example (Stereo Inputs 23 & 24):* `1024 + 22`
+* **MIDI Devices:** Use `4096 + (MIDI Device ID * 32) + MIDI Channel` (Where Channel `0` = All Channels).
+  * *Example (All MIDI Inputs, All Channels):* `4096 + (63 * 32) + 0` (Calculates to `6112`)
+  * *Example (MIDI Device ID 0, Channel 1):* `4096 + (0 * 32) + 1` (Calculates to `4097`)
 
 ### Template Configuration Example
 ```lua
 local rules = {
     -- ["track name trigger"] = { input = API_VALUE, auto_arm = true/false, monitor = 0/1/2 }
-    ["monotrack"]   = { input = 0,         auto_arm = true, monitor = 1 }, -- Mono Input 1
-    ["stereotrack"] = { input = 1024 + 0,  auto_arm = true, monitor = 1 }, -- Stereo Inputs 1 & 2
+    ["monotrack"]   = { input = 0,                    auto_arm = true, monitor = 1 }, -- Mono Audio Input 1
+    ["stereotrack"] = { input = 1024 + 0,             auto_arm = true, monitor = 1 }, -- Stereo Audio Inputs 1 & 2
+    ["miditrack"]   = { input = 4096 + (63 * 32) + 0, auto_arm = true, monitor = 1 }  -- MIDI: All Inputs, All Channels
 }
